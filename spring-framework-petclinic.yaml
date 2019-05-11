@@ -1,0 +1,40 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: spring-framework-petclinic
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: spring-framework-petclinic
+    spec:
+      containers:
+      - name: spring-framework-petclinic
+        image: akshays13/petclinic.v2
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-framework-petclinic
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: spring-framework-petclinic
